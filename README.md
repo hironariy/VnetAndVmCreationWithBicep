@@ -1,6 +1,6 @@
 # Bicepを使ったAzure Virtual NetworkとVirtual Machineの作成手順例
 
-本リポジトリのコードを使って、Azureのオーストラリア東部リージョンにVNetを1つ、そのなかにサブネットを10こ作成し、各サブネットにVMを1台ずつ、それぞれにPublic IPを付与した状態で作成する手順を示します。
+本リポジトリのコードを使って、Azureの任意のリージョンにVNetを1つ、そのなかにサブネットを10こ、ストレージアカウントを1つ作成し、各サブネットにVMを1台ずつ、それぞれにPublic IPを付与した状態で作成する手順を示します。
 
 ## 前提条件、利用ツール
 
@@ -10,7 +10,7 @@
 
 本作業例はmacOS 15.2のzshで動作を確認しています。
 
-本作業ではVMを作成し管理者アカウントでログイン、データディスクのフォーマットとマウント、Blobfuse2をつかったBlob Storageのマウント、Infinibandドライバーのインストール、IP over InfinibandでのVM間相互通信までを行います。
+本作業ではVMを作成し管理者アカウントでログイン、データディスクのフォーマットとマウント、Infinibandドライバーのインストール、IP over InfinibandでのVM間相互通信までを行います。
 
 すべてのVMで同じ公開鍵を登録します。
 
@@ -19,6 +19,7 @@
 ### 利用ツール
 
 ツールは以下のものを利用します。
+- [Git](https://git-scm.com/)
 - [Visual Studio Code](https://learn.microsoft.com/ja-jp/azure/azure-resource-manager/bicep/install#azure-cli)
 - [Azure CLI](https://learn.microsoft.com/ja-jp/azure/azure-resource-manager/bicep/install#azure-cli)
 - [Bicep CLI](https://learn.microsoft.com/ja-jp/azure/azure-resource-manager/bicep/install#azure-cli)
@@ -45,10 +46,11 @@
 
 作業は以下の順に実行します。
 
-1. VM作成 事前作業 (ここまではAzureの費用なしに可能)
-    1. リソースグループの作成
-    2. VNet及び各VM用のサブネット、ストレージアカウントの作成
-    3. 各VMログイン用のキーペアの作成
+1. VM作成事前作業 (ここまではAzureの費用なしに可能)
+    1. 本リポジトリのクローン
+    2. リソースグループの作成
+    3. VNet及び各VM用のサブネット、ストレージアカウントの作成
+    4. 各VMログイン用のキーペアの作成
 
 2. VM作成作業 (ここから費用が発生)
     1. VMの作成、パブリックIPの割当、データディスクのアタッチ
@@ -56,15 +58,25 @@
 
 3. 通常のVMとしての作業
     1. データディスクのフォーマットとマウント
-    2. Blobfuseを使ったBlob Storageのマウント
+    2. Blobfuse2を使ったBlob Storageのマウント
 
 3. HPC用作業
     1. Infinibandドライバーのインストール、有効化
     2. IP over InfinibandでのVM相互通信テスト
-    
-## 1-i. リソースグループの作成
 
-最初にAzure CLIにログインします。
+## VM作成事前作業
+
+### 1-i. 本リポジトリのクローン
+
+作業端末で本リポジトリをクローンします。
+
+```zsh
+git clone https://github.com/hironariy/VnetAndVmCreationWithBicep.git
+```
+
+### 1-ii. リソースグループの作成
+
+Azure CLIにログインします。
 
 ```Azure CLI
 az login
@@ -82,9 +94,30 @@ az account set --subscription <サブスクリプション名 or サブスクリ
 
 サブスクリプション内にリソースグループを作成します。
 
-```Aure CLI
-az group create --name <リソースグループ名> --location australiaeast
+```Azure CLI
+az group create --name <任意のリソースグループ名> --location <任意のリージョン>
+# 代表的なリージョン
+# japaneast 東日本
+# australiaeast オーストラリア東部
+# westeurope ヨーロッパ西部
 ```
+### 1-iii. VNet及び各VM用のサブネット、ストレージアカウントの作成
+
+本リポジトリのコードを使ってVNet、その中のサブネット、ストレージアカウントを作成します。
+
+```Azure CLI
+az deployment group create -g <リソースグループ名> --template-file VnetAndSaCreation.bicep
+```
+
+コマンド実行後にサブネット作成数を入力します。後に作成するVMと同じ数にします。
+
+```zsh
+#  作成するサブネットの数を入力。最小 1、最大 10
+Please provide int value for 'subnetCount' (? for help): <1から10までの任意の整数>
+```
+
+
+
 
     
 

@@ -7,7 +7,7 @@ param storageAccountName string = 'store${uniqueString(resourceGroup().id)}'
 
 @minValue(1)
 @maxValue(10)
-param subnetCount int = 2
+param subnetCount int
 
 resource vnet 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   name: 'competitionVNet'
