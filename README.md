@@ -55,7 +55,13 @@ az login
 az account show --output table
 
 # アクティブなサブスクリプションの設定
-az account set --subscription *<サブスクリプション名 or サブスクリプションID>*
+az account set --subscription <サブスクリプション名 or サブスクリプションID>
+```
+
+サブスクリプション内にリソースグループを作成します。
+
+```Aure CLI
+az group create --name <リソースグループ名> --location australiaeast
 ```
 
     
