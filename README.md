@@ -174,8 +174,9 @@ az resource list -g <リソースグループ名> -o table
 az deployment group show --resource-group <リソースグループ名> --name bicepDeployment --query properties.outputs
 ```
 
+出力例
+
 ```json
-#出力例
 {
   "adminUsername": {
     "type": "String",
@@ -203,6 +204,93 @@ outputsに出力されるssh接続コマンドを使って各VMに接続しま�
 ```shell
 #出力されたコマンドに-iオプションを付与し秘密鍵を指定します。
 ssh <管理者アカウント名>@<VM名> -i <ssh接続用秘密鍵>
+```
+
+## 通常のVMとしての作業
+
+### 3-i. データディスクのフォーマットとマウント
+
+sshでVMにログインし、ディスクがアタッチされていることを確認します。
+下記の例だとsdbという名前で接続されています。
+
+```shell
+rootAccountName@vmName:~$ lsblk
+NAME    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+sda       8:0    0   30G  0 disk 
+├─sda1    8:1    0   29G  0 part /
+├─sda14   8:14   0    4M  0 part 
+├─sda15   8:15   0  106M  0 part /boot/efi
+└─sda16 259:0    0  913M  0 part /boot
+sdb       8:16   0    1T  0 disk 
+sr0      11:0    1  628K  0 rom 
+```
+
+今回はパーティション分割せずにディスクにファイルシステムを作成します。
+
+```shell
+rootAccountName@vmName:~$ sudo mkfs.ext4 /dev/sdb
+mke2fs 1.47.0 (5-Feb-2023)
+Discarding device blocks: done                            
+Creating filesystem with 268435456 4k blocks and 67108864 inodes
+Filesystem UUID: 51a34127-b69b-4c53-a9c7-c0431b90367a
+Superblock backups stored on blocks: 
+        32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208, 
+        4096000, 7962624, 11239424, 20480000, 23887872, 71663616, 78675968, 
+        102400000, 214990848
+
+Allocating group tables: done                            
+Writing inode tables: done                            
+Creating journal (262144 blocks): done
+Writing superblocks and filesystem accounting information: done  
+```
+
+データディスクをマウントします。
+
+```shell
+rootAccountName@vmName:~$ sudo mkdir /mnt/datadrive
+rootAccountName@vmName:~$ sudo mount /dev/sdb /mnt/datadrive
+```
+
+マウントされたことを確認します。
+
+```shell
+rootAccountName@vmName:~$ lsblk
+NAME    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+sda       8:0    0   30G  0 disk 
+├─sda1    8:1    0   29G  0 part /
+├─sda14   8:14   0    4M  0 part 
+├─sda15   8:15   0  106M  0 part /boot/efi
+└─sda16 259:0    0  913M  0 part /boot
+sdb       8:16   0    1T  0 disk /mnt/datadrive
+sr0      11:0    1  628K  0 rom  
+```
+
+再起動後にドライブがマウントされるようにそのドライブを/etc/fstabファイルに追加します。事前作業としてblkidでディスクのUUIDを取得します。
+
+```shell
+sudo -i blkid
+```
+
+出力例
+
+```shell
+/dev/sda16: LABEL="BOOT" UUID="a1f941e3-782c-4e21-ba31-97e0f6fcb50c" BLOCK_SIZE="4096" TYPE="ext4" PARTUUID="fa54c6a9-6293-42d8-8453-11079fe5eec1"
+/dev/sda15: LABEL_FATBOOT="UEFI" LABEL="UEFI" UUID="C30D-3EEB" BLOCK_SIZE="512" TYPE="vfat" PARTUUID="7ccbd9ff-7523-46a4-b138-68a3c6efcb31"
+/dev/sda1: LABEL="cloudimg-rootfs" UUID="61bdcf85-9086-4bfd-9faf-225cb7bf06be" BLOCK_SIZE="4096" TYPE="ext4" PARTUUID="8be7931c-8315-4344-95d4-bcbd379998fb"
+/dev/sdb: UUID="51a34127-b69b-4c53-a9c7-c0431b90367a" BLOCK_SIZE="4096" TYPE="ext4"
+/dev/sda14: PARTUUID="be23fb2f-458b-4d03-aef4-fb30182ba8ea"
+```
+
+テキストエディタで/etc/fstabファイルを開きます。
+
+```shell
+sudo vim /etc/fstab
+```
+
+次のような行をファイルに追記します。UUIDは環境に合わせて変更します。
+
+```shell
+UUID=51a34127-b69b-4c53-a9c7-c0431b90367a   /mnt/datadrive  ext4    defaults,nofail   1  2
 ```
 
 
