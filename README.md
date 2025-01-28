@@ -136,6 +136,16 @@ BicepVNet           exampleRg    region-name  Microsoft.Network/virtualNetworks
 az deployment group show --resource-group <リソースグループ名> --name vnetDeployment --query properties.outputs
 ```
 
+あとでBlobfuse2でVMからBlob Storageをマウントするときに利用するので、Blob Storageの接続文字列を出力し、メモしておきます。
+
+```shell
+az storage account show-connection-string -g competitionRg -n storepwfyexa62bclc
+#出力例
+{
+  "connectionString": "DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=xxxxxxxxxx;AccountKey=Jixxxxxxxxxxxxxxx;BlobEndpoint=https://xxxxxxxxxx.blob.core.windows.net/;FileEndpoint=https://xxxxxxxxxx.file.core.windows.net/;QueueEndpoint=https://xxxxxxxxxx.queue.core.windows.net/;TableEndpoint=https://xxxxxxxxxx.table.core.windows.net/"
+}
+```
+
 ### 1-iv.　各VMログイン用のキーペアの作成 (未作成の場合)
 
 VMの管理者アカウント用のsshキーペアを作成していない場合は作成します。
