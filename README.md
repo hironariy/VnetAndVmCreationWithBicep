@@ -10,3 +10,12 @@
 - [Visual Studio Code](https://learn.microsoft.com/ja-jp/azure/azure-resource-manager/bicep/install#azure-cli)
 - [Azure CLI](https://learn.microsoft.com/ja-jp/azure/azure-resource-manager/bicep/install#azure-cli)
 - [Bicep CLI](https://learn.microsoft.com/ja-jp/azure/azure-resource-manager/bicep/install#azure-cli)
+
+以下の作業に入る前にあらかじめAzureサブスクリプションの作成、利用するリージョンおよびVMのSKUのクォータを確保しておいてください。本リポジトリのコードではオーストラリア東部(australiaeast)リージョンの[Dasv5シリーズ](https://learn.microsoft.com/ja-jp/azure/virtual-machines/sizes/general-purpose/dasv5-series?tabs=sizebasic)のVMを利用します。
+
+本リポジトリのコードを修正し、任意のリージョン、VMのSKUを利用することが可能です。
+
+## 作業の流れ
+
+作業は以下の順に実行します。
+
