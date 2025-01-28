@@ -40,3 +40,13 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
     accessTier: 'Hot'
   }
 }
+
+resource blobContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01' = {
+  name: '${storageAccountName}/default/sharedContainer'
+  properties: {
+    publicAccess: 'None'
+  }
+}
+
+output storageAccountName string = storageAccount.name
+output blobContainerName string = blobContainer.name

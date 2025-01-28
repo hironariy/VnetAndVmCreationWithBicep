@@ -36,6 +36,7 @@
         - VMイメージ: microsoft-dsvm:ubuntu-hpc:2204:22.04.2024102301
     - HPC2:
         - VM SKU: [ND-H100-v5シリーズ Standard_ND96isr_H100_v5](https://learn.microsoft.com/ja-jp/azure/virtual-machines/sizes/gpu-accelerated/ndh100v5-series?tabs=sizebasic)
+        - VMイメージ: microsoft-dsvm:ubuntu-hpc:2204:22.04.2024102301
 - OSディスク: Premium SSD LRS
 - データディスク: Premium SSD LRS 1TB
 - NIC: Public IPを付加
@@ -106,7 +107,7 @@ az group create --name <任意のリソースグループ名> --location <任意
 本リポジトリのコードを使ってVNet、その中のサブネット、ストレージアカウントを作成します。
 
 ```shell
-az deployment group create -g <リソースグループ名> --template-file VnetAndSaCreation.bicep
+az deployment group create -g <リソースグループ名> --template-file VnetAndSaCreation.bicep --name vnetDeployment
 ```
 
 コマンド実行後にサブネット作成数を入力します。後に作成するVMと同じ数にします。
@@ -129,6 +130,12 @@ storeexample        exampleRg    region-name  Microsoft.Storage/storageAccounts
 BicepVNet           exampleRg    region-name  Microsoft.Network/virtualNetworks
 ```
 
+作成したストレージアカウントとBlob Storageのコンテナの名前を確認します。
+
+```shell
+az deployment group show --resource-group <リソースグループ名> --name vnetDeployment --query properties.outputs
+```
+
 ### 1-iv.　各VMログイン用のキーペアの作成 (未作成の場合)
 
 VMの管理者アカウント用のsshキーペアを作成していない場合は作成します。
@@ -144,7 +151,7 @@ ssh-keygen -t rsa -b 4096
 VM作成用のBicepを利用してVMやディスク、PublicIPを作成します。
 
 ```shell
-az deployment group create -g <リソースグループ名> --template-file VmCreation.bicep --name bicepDeployment   
+az deployment group create -g <リソースグループ名> --template-file VmCreation.bicep --name vmDeployment   
 ```
 
 ```shell
@@ -171,7 +178,7 @@ az resource list -g <リソースグループ名> -o table
 先ほど利用したデプロイメントからoutputsを確認します。
 
 ```shell
-az deployment group show --resource-group <リソースグループ名> --name bicepDeployment --query properties.outputs
+az deployment group show --resource-group <リソースグループ名> --name vmDeployment --query properties.outputs
 ```
 
 出力例
