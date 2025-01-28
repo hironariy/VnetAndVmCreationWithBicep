@@ -1,6 +1,8 @@
 param location string = resourceGroup().location
 
-@description('The size of the VM')
+@minLength(3)
+@maxLength(24)
+param vmNamePrefix string = 'BicepVm'
 
 @allowed([
   'General'
@@ -12,7 +14,6 @@ param vmType string
 @minValue(1)
 @maxValue(10)
 param vmCount int = 2
-param vmNamePrefix string = 'competitionVm'
 
 @description('Username for the Virtual Machine.')
 param adminUsername string
@@ -76,7 +77,7 @@ var linuxConfiguration = {
 
 // Reference the existing VNet
 resource vnet 'Microsoft.Network/virtualNetworks@2024-05-01' existing = {
-  name: 'competitionVNet'
+  name: 'BicepVNet'
 }
 
 resource publicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' = [for i in range(0, vmCount):{
@@ -91,7 +92,7 @@ resource publicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' = [for i in r
 }]
 
 resource dataDisk 'Microsoft.Compute/disks@2024-03-02' = [for i in range(0, vmCount):{
-  name: 'competitionVm${i + 1}-dataDisk'
+  name: '${vmNamePrefix}${i + 1}-dataDisk'
   location: location
   sku: {
     name: dataDiskType
@@ -107,7 +108,7 @@ resource dataDisk 'Microsoft.Compute/disks@2024-03-02' = [for i in range(0, vmCo
 }]
 
 resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = [for i in range(0, vmCount):{
-  name: 'competitionVm${i + 1}'
+  name: '${vmNamePrefix}${i + 1}'
   location: location
   properties: {
     hardwareProfile: {
@@ -124,7 +125,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = [for i in range(0, 
       dataDisks: [
         {
           lun: 0
-          name: 'competitionVm${i + 1}-dataDisk'
+          name: '${vmNamePrefix}${i + 1}-dataDisk'
           createOption: 'Attach'
           managedDisk: {
             id: dataDisk[i].id
@@ -133,7 +134,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = [for i in range(0, 
       ]
     }
     osProfile: {
-      computerName: 'competitionVm${i + 1}'
+      computerName: '${vmNamePrefix}${i + 1}'
       adminUsername: adminUsername
       adminPassword: adminPasswordOrKey
       linuxConfiguration: ((authenticationType == 'password') ? null : linuxConfiguration)

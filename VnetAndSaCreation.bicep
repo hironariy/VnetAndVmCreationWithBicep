@@ -10,7 +10,7 @@ param storageAccountName string = 'store${uniqueString(resourceGroup().id)}'
 param subnetCount int
 
 resource vnet 'Microsoft.Network/virtualNetworks@2024-05-01' = {
-  name: 'competitionVNet'
+  name: 'BicepVNet'
   location: location
   properties: {
     addressSpace: {

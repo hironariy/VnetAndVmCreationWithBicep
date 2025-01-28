@@ -50,7 +50,7 @@
     1. 本リポジトリのクローン
     2. リソースグループの作成
     3. VNet及び各VM用のサブネット、ストレージアカウントの作成
-    4. 各VMログイン用のキーペアの作成
+    4. 各VMログイン用のキーペアの作成 (未作成の場合)
 
 2. VM作成作業 (ここから費用が発生)
     1. VMの作成、パブリックIPの割当、データディスクのアタッチ
@@ -70,7 +70,7 @@
 
 作業端末で本リポジトリをクローンします。
 
-```zsh
+```shell
 git clone https://github.com/hironariy/VnetAndVmCreationWithBicep.git
 ```
 
@@ -78,13 +78,13 @@ git clone https://github.com/hironariy/VnetAndVmCreationWithBicep.git
 
 Azure CLIにログインします。
 
-```Azure CLI
+```shell
 az login
 ```
 
 必要に応じて作業対象のサブスクリプションに移動します。
 
-```Azure CLI
+```shell
 # ログインしたアカウントで利用可能なサブスクリプションの表示
 az account show --output table
 
@@ -94,7 +94,7 @@ az account set --subscription <サブスクリプション名 or サブスクリ
 
 サブスクリプション内にリソースグループを作成します。
 
-```Azure CLI
+```shell
 az group create --name <任意のリソースグループ名> --location <任意のリージョン>
 # 代表的なリージョン
 # japaneast 東日本
@@ -105,16 +105,106 @@ az group create --name <任意のリソースグループ名> --location <任意
 
 本リポジトリのコードを使ってVNet、その中のサブネット、ストレージアカウントを作成します。
 
-```Azure CLI
+```shell
 az deployment group create -g <リソースグループ名> --template-file VnetAndSaCreation.bicep
 ```
 
 コマンド実行後にサブネット作成数を入力します。後に作成するVMと同じ数にします。
 
-```zsh
+```shell
 #  作成するサブネットの数を入力。最小 1、最大 10
 Please provide int value for 'subnetCount' (? for help): <1から10までの任意の整数>
 ```
+
+VNetとストレージアカウントが作成されたことを確認します。
+サブネットはVNetのプロパティのため、リソースが表示されるここでは表示されません。
+
+```shell
+az resource list -g <リソースグループ名> -o table
+
+#表示例
+Name                ResourceGroup    Location       Type                               Status
+------------------  ---------------  -------------  ---------------------------------  --------
+storeexample        exampleRg    region-name  Microsoft.Storage/storageAccounts
+BicepVNet           exampleRg    region-name  Microsoft.Network/virtualNetworks
+```
+
+### 1-iv.　各VMログイン用のキーペアの作成 (未作成の場合)
+
+VMの管理者アカウント用のsshキーペアを作成していない場合は作成します。
+
+```shell
+ssh-keygen -t rsa -b 4096  
+```
+
+## VM作成作業
+
+### 2-i. VMの作成、パブリックIPの割当、データディスクのアタッチ
+
+VM作成用のBicepを利用してVMやディスク、PublicIPを作成します。
+
+```shell
+az deployment group create -g <リソースグループ名> --template-file VmCreation.bicep --name bicepDeployment   
+```
+
+```shell
+Please provide string value for 'vmType' (? for help): 
+ [1] General
+ [2] HPC
+ [3] HPC2
+Please enter a choice [Default choice(1)]:  <作成するVM Type番号>
+Please provide string value for 'adminUsername' (? for help): <管理者アカウント名>
+Please provide string value for 'authenticationType' (? for help): 
+ [1] sshPublicKey
+ [2] password
+Please enter a choice [Default choice(1)]: 1 #本サンプルでは公開鍵を利用
+Please provide securestring value for 'adminPasswordOrKey' (? for help): <登録する公開鍵の文字列>
+```
+
+作成されたリソースを確認します。
+
+```shell
+az resource list -g <リソースグループ名> -o table
+```
+### 2-ii. ログイン確認
+
+先ほど利用したデプロイメントからoutputsを確認します。
+
+```shell
+az deployment group show --resource-group <リソースグループ名> --name bicepDeployment --query properties.outputs
+```
+
+```json
+#出力例
+{
+  "adminUsername": {
+    "type": "String",
+    "value": "<管理者アカウント名>"
+  },
+  "hostname": {
+    "type": "Array",
+    "value": [
+      "<vm1名>.<リージョン名>.cloudapp.azure.com",
+      "<vm2名>.<リージョン名>.australiaeast.cloudapp.azure.com"
+    ]
+  },
+  "sshCommand": {
+    "type": "Array",
+    "value": [
+      "<VM1接続用sshコマンド>",
+      "<VM2接続用sshコマンド>"
+    ]
+  }
+}
+```
+
+outputsに出力されるssh接続コマンドを使って各VMに接続します。
+
+```shell
+#出力されたコマンドに-iオプションを付与し秘密鍵を指定します。
+ssh <管理者アカウント名>@<VM名> -i <ssh接続用秘密鍵>
+```
+
 
 
 
