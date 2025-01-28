@@ -5,6 +5,7 @@ param location string = resourceGroup().location
 @allowed([
   'General'
   'HPC'
+  'HPC2'
 ])
 param vmType string
 
@@ -36,6 +37,7 @@ var dataDiskType = 'Premium_LRS'
 var vmSize = {
   General: 'Standard_D2as_v5'
   HPC: 'Standard_ND40rs_v2'
+  HPC2: 'Standard_ND96isr_H100_v5'
 }
 
 var imageReference = {
@@ -46,10 +48,16 @@ var imageReference = {
     version: 'latest'
   }
   HPC: {
-    publisher: 'Canonical'
-    offer: 'ubuntu-24_04-lts'
-    sku: 'server'
-    version: 'latest'
+    publisher: 'microsoft-dsvm'
+    offer: 'ubuntu-hpc'
+    sku: '2204'
+    version: '22.04.2024102301'
+  }
+  HPC2: {
+    publisher: 'microsoft-dsvm'
+    offer: 'ubuntu-hpc'
+    sku: '2204'
+    version: '22.04.2024102301'
   }
 }
 
