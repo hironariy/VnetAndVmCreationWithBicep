@@ -329,7 +329,7 @@ sudo vim /etc/fstab
 UUID=51a34127-b69b-4c53-a9c7-c0431b90367a   /datadrive  ext4    defaults,nofail   1  2
 ```
 
-### 3-ii. Blob Storageのコンテナのマウント
+### 3-ii. Blob Storageのコンテナのマウント (各VMでBlob Storageをマウントして利用する場合)
 
 [BlobFuse2のドキュメント](https://learn.microsoft.com/ja-jp/azure/storage/blobs/blobfuse2-how-to-deploy?tabs=Ubuntu)を参考に各VMにBlobfuse2をMSのパッケージリポジトリからインストールします。
 
