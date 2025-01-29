@@ -135,6 +135,24 @@ BicepVNet           exampleRg    region-name  Microsoft.Network/virtualNetworks
 ```shell
 az deployment group show --resource-group <リソースグループ名> --name vnetDeployment --query properties.outputs
 ```
+出力例
+```json
+{
+  "blobContainerName": {
+    "type": "String",
+    "value": "<BlobStorageコンテナ名>"
+  },
+  "blobServiceName": {
+    "type": "String",
+    "value": "<BlobStorageサービス名>"
+  },
+  "storageAccountName": {
+    "type": "String",
+    "value": "<ストレージアカウント名>"
+  }
+}
+
+```
 
 あとでBlobfuse2でVMからBlob Storageをマウントするときに利用するので、Blob Storageの接続文字列を出力し、メモしておきます。
 
