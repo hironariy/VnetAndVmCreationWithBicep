@@ -188,6 +188,7 @@ Please provide string value for 'vmType' (? for help):
  [2] HPC
  [3] HPC2
 Please enter a choice [Default choice(1)]:  <作成するVM Type番号>
+Please provide int value for 'vmCount' (? for help): <サブネットと同じ整数>
 Please provide string value for 'adminUsername' (? for help): <管理者アカウント名>
 Please provide string value for 'authenticationType' (? for help): 
  [1] sshPublicKey

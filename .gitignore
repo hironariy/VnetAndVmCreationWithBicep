@@ -1,3 +1,4 @@
 *.parameters.json
 id_rsa
 id_rsa.pub
+memo.txt
