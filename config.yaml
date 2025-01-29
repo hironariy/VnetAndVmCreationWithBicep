@@ -14,7 +14,7 @@ libfuse:
   negative-entry-expiration-sec: 240
 
 file_cache:
-  path: /<PATH>/<TO>/<CACHE_DIR>
+  path: /mnt/blobfusecache
   timeout-sec: 120
   max-size-mb: 4096
 
@@ -26,4 +26,4 @@ azstorage:
   account-name: <ACCOUNT_NAME>
   account-key: <ACCOUNT_KEY>
   mode: key
-  container: <CONTAINER_NAME>
+  container: sharedcontainer

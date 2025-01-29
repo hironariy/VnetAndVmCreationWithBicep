@@ -354,6 +354,13 @@ sudo apt-get install libfuse3-dev fuse3
 sudo apt-get install blobfuse2
 ```
 
+BlobFuse2用の各ディレクトリを作成します。
+
+```shell
+sudo mkdir /mnt/blobfusecache #今回利用するVM SKUはすべて一時ディスクを保持しておりそこにBlobFuse2のキャッシュディレクトリを作成します。
+mkdir blobfuse2
+```
+
 
 
     
