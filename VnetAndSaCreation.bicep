@@ -41,12 +41,19 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
   }
 }
 
-resource blobContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01' = {
-  name: '${storageAccountName}/default/sharedContainer'
+resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2023-05-01' = {
+  parent: storageAccount
+  name: 'default'
+}
+
+resource blobContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-05-01' = {
+  parent: blobService
+  name: 'sharedcontainer'
   properties: {
     publicAccess: 'None'
   }
 }
 
 output storageAccountName string = storageAccount.name
+output blobServiceName string = blobService.name
 output blobContainerName string = blobContainer.name

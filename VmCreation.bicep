@@ -13,7 +13,7 @@ param vmType string
 
 @minValue(1)
 @maxValue(10)
-param vmCount int = 2
+param vmCount int
 
 @description('Username for the Virtual Machine.')
 param adminUsername string
