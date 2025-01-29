@@ -29,7 +29,7 @@
 - リージョン: リソースグループを作成する際に指定
 - vmType (Bicepのパラメータとして設定された変数で以下の2種類があり、この値によってVM SKU、VMイメージが決定される):
     - General: 
-        - VM SKU: [Dasv5シリーズ Standard_D2as_v5](https://learn.microsoft.com/ja-jp/azure/virtual-machines/sizes/general-purpose/dasv5-series?tabs=sizebasic)
+        - VM SKU: [Dadsv5シリーズ Standard_D2ads_v5](https://learn.microsoft.com/ja-jp/azure/virtual-machines/sizes/general-purpose/dadsv5-series?tabs=sizebasic)
         - VMイメージ: Canonical:ubuntu-24_04-lts:server:latest
     - HPC:
         - VM SKU: [NDv2シリーズ Standard_ND40rs_v2](https://learn.microsoft.com/ja-jp/azure/virtual-machines/sizes/gpu-accelerated/ndv2-series?tabs=sizebasic)

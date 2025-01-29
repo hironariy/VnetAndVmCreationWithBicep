@@ -42,7 +42,7 @@ var vmSecondNamePrefix = {
 }
 
 var vmSize = {
-  General: 'Standard_D2as_v5'
+  General: 'Standard_D2ads_v5'
   HPC: 'Standard_ND40rs_v2'
   HPC2: 'Standard_ND96isr_H100_v5'
 }
