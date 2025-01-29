@@ -357,11 +357,48 @@ sudo apt-get install blobfuse2
 BlobFuse2用の各ディレクトリを作成します。
 
 ```shell
-sudo mkdir /mnt/blobfusecache #今回利用するVM SKUはすべて一時ディスクを保持しておりそこにBlobFuse2のキャッシュディレクトリを作成します。
-mkdir blobfuse2
+sudo mkdir /datadrive/blobfusecache #データディスクにキャッシュ領域となるディレクトリを作成
+sudo chmod 777 /datadrive/blobfusecache
+sudo mkdir /sharedblobcontainer
+sudo chmod 777 /sharedblobcontainer
+mkdir blobfuse2 #ホームディレクトリに作業用ディレクトリを作成
+cd blobfuse2 #作業用ディレクトリに移動
 ```
 
+BlobFuse2用のconfigファイルを作成し、本リポジトリのconfig.yamlをコピー、ストレージアカウント名、アカウントキーを環境に合わせて変更します。
+
+```shell
+touch config.yaml
+sudo vim config.yaml #本リポジトリのconfig.yamlをコピー、ストレージアカウント名、アカウントキーを環境に合わせて変更
+```
+
+まだBlobFuse2をつかってマウントされていないことを確認します。
+
+```shell
+blobfuse2 mount list
+#何も出力されないことを確認
+```
+
+先ほど作成したディレクトリにマウントします。
+
+```shell
+blobfuse2 mount /sharedblobcontainer --config-file=./config.yaml
+```
+
+マウントしたディレクトリにファイルを作成してみます。
+
+```
+$mkdir /sharedblobcontainer/fusetest
+$echo "hello world" > /sharedblobcontainer/fusetest/blob.txt
+```
+
+> [!Note]
+> Azure PortalでBlob Storageに作成されたかを確認する場合は本リポジトリのBicepではストレージアカウントのBlobへのPublic Accessが無効化されているので有効にし直します。
+>  ![ストレージアカウントのPublic Accessの設定変更](./image/blobPublicAccessEnable.png)
+>
+> するとAzure PortalでもBlob Storageにファイルが反映されていることが確認できます。
+> ![Azure Portalからのファイル作成確認](./image/blobfusetest.png)
 
 
-    
+
 
