@@ -139,7 +139,7 @@ az deployment group show --resource-group <リソースグループ名> --name v
 あとでBlobfuse2でVMからBlob Storageをマウントするときに利用するので、Blob Storageの接続文字列を出力し、メモしておきます。
 
 ```shell
-az storage account show-connection-string -g competitionRg -n storepwfyexa62bclc
+az storage account show-connection-string -g competitionRg -n <ストレージアカウント名>
 #出力例
 {
   "connectionString": "DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=xxxxxxxxxx;AccountKey=Jixxxxxxxxxxxxxxx;BlobEndpoint=https://xxxxxxxxxx.blob.core.windows.net/;FileEndpoint=https://xxxxxxxxxx.file.core.windows.net/;QueueEndpoint=https://xxxxxxxxxx.queue.core.windows.net/;TableEndpoint=https://xxxxxxxxxx.table.core.windows.net/"
