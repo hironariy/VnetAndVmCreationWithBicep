@@ -59,7 +59,7 @@
 
 3. 通常のVMとしての作業
     1. データディスクのフォーマットとマウント
-    2. Blobfuse2を使ったBlob Storageのマウント
+    2. BlobFuse2を使ったBlob Storageのマウント
 
 3. HPC用作業
     1. Infinibandドライバーのインストール、有効化
@@ -283,8 +283,8 @@ Writing superblocks and filesystem accounting information: done
 データディスクをマウントします。
 
 ```shell
-rootAccountName@vmName:~$ sudo mkdir /mnt/datadrive
-rootAccountName@vmName:~$ sudo mount /dev/sdb /mnt/datadrive
+rootAccountName@vmName:~$ sudo mkdir /datadrive
+rootAccountName@vmName:~$ sudo mount /dev/sdb /datadrive
 ```
 
 マウントされたことを確認します。
@@ -297,7 +297,7 @@ sda       8:0    0   30G  0 disk
 ├─sda14   8:14   0    4M  0 part 
 ├─sda15   8:15   0  106M  0 part /boot/efi
 └─sda16 259:0    0  913M  0 part /boot
-sdb       8:16   0    1T  0 disk /mnt/datadrive
+sdb       8:16   0    1T  0 disk /datadrive
 sr0      11:0    1  628K  0 rom  
 ```
 
@@ -326,10 +326,33 @@ sudo vim /etc/fstab
 次のような行をファイルに追記します。UUIDは環境に合わせて変更します。
 
 ```shell
-UUID=51a34127-b69b-4c53-a9c7-c0431b90367a   /mnt/datadrive  ext4    defaults,nofail   1  2
+UUID=51a34127-b69b-4c53-a9c7-c0431b90367a   /datadrive  ext4    defaults,nofail   1  2
 ```
 
+### 3-ii. Blob Storageのコンテナのマウント
 
+[BlobFuse2のドキュメント](https://learn.microsoft.com/ja-jp/azure/storage/blobs/blobfuse2-how-to-deploy?tabs=Ubuntu)を参考に各VMにBlobfuse2をMSのパッケージリポジトリからインストールします。
+
+最初にリポジトリを構成し、関連するパッケージをインストールします。
+
+```shell
+# Generalの場合
+sudo wget https://packages.microsoft.com/config/ubuntu/24.04/packages-microsoft-prod.deb
+
+# HPC, HPC2の場合
+sudo wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
+
+# 以降は共通
+sudo dpkg -i packages-microsoft-prod.deb
+sudo apt-get update
+sudo apt-get install libfuse3-dev fuse3
+```
+
+次にBlobFuse2をインストールします。
+
+```shell
+sudo apt-get install blobfuse2
+```
 
 
 
