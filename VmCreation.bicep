@@ -35,6 +35,12 @@ param dnsLabelPrefix string = toLower('${vmNamePrefix}-${uniqueString(resourceGr
 var osDiskType = 'Premium_LRS'
 var dataDiskType = 'Premium_LRS'
 
+var vmSecondNamePrefix = {
+  General: 'General'
+  HPC: 'HPC'
+  HPC2: 'HPC2'
+}
+
 var vmSize = {
   General: 'Standard_D2as_v5'
   HPC: 'Standard_ND40rs_v2'
@@ -92,7 +98,7 @@ resource publicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' = [for i in r
 }]
 
 resource dataDisk 'Microsoft.Compute/disks@2024-03-02' = [for i in range(0, vmCount):{
-  name: '${vmNamePrefix}${i + 1}-dataDisk'
+  name: '${vmNamePrefix}-${vmSecondNamePrefix[vmType]}-${i + 1}-dataDisk'
   location: location
   sku: {
     name: dataDiskType
@@ -108,7 +114,7 @@ resource dataDisk 'Microsoft.Compute/disks@2024-03-02' = [for i in range(0, vmCo
 }]
 
 resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = [for i in range(0, vmCount):{
-  name: '${vmNamePrefix}${i + 1}'
+  name: '${vmNamePrefix}-${vmSecondNamePrefix[vmType]}-${i + 1}'
   location: location
   properties: {
     hardwareProfile: {
@@ -125,7 +131,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = [for i in range(0, 
       dataDisks: [
         {
           lun: 0
-          name: '${vmNamePrefix}${i + 1}-dataDisk'
+          name: '${vmNamePrefix}-${vmSecondNamePrefix[vmType]}-${i + 1}-dataDisk'
           createOption: 'Attach'
           managedDisk: {
             id: dataDisk[i].id
@@ -134,7 +140,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = [for i in range(0, 
       ]
     }
     osProfile: {
-      computerName: '${vmNamePrefix}${i + 1}'
+      computerName: '${vmNamePrefix}-${vmSecondNamePrefix[vmType]}-${i + 1}'
       adminUsername: adminUsername
       adminPassword: adminPasswordOrKey
       linuxConfiguration: ((authenticationType == 'password') ? null : linuxConfiguration)
