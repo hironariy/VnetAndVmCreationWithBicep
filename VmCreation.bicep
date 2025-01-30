@@ -97,6 +97,19 @@ resource publicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' = [for i in r
   }
 }]
 
+// Create an availability set for the first two VMs
+resource availabilitySet 'Microsoft.Compute/availabilitySets@2022-08-01' = {
+  name: '${vmNamePrefix}-availabilitySet'
+  location: location
+  sku: {
+    name: 'Aligned'
+  }
+  properties: {
+    platformFaultDomainCount: 2
+    platformUpdateDomainCount: 2
+  }
+}
+
 resource dataDisk 'Microsoft.Compute/disks@2024-03-02' = [for i in range(0, vmCount):{
   name: '${vmNamePrefix}-${vmSecondNamePrefix[vmType]}-${i + 1}-dataDisk'
   location: location
@@ -112,6 +125,8 @@ resource dataDisk 'Microsoft.Compute/disks@2024-03-02' = [for i in range(0, vmCo
     }
   }
 }]
+
+
 
 resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = [for i in range(0, vmCount):{
   name: '${vmNamePrefix}-${vmSecondNamePrefix[vmType]}-${i + 1}'
@@ -151,6 +166,9 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = [for i in range(0, 
           id: nic[i].id
         }
       ]
+    }
+    availabilitySet: {
+      id: availabilitySet.id
     }
   }
 }]

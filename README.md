@@ -178,6 +178,9 @@ ssh-keygen -t rsa -b 4096
 
 ## VM作成作業
 
+> [!Note] HPCをつかってIP over Infinibandでの通信を考えている方へ
+> 可用性セット
+
 ### 2-i. VMの作成、パブリックIPの割当、データディスクのアタッチ
 
 VM作成用のBicepを利用してVMやディスク、PublicIPを作成します。
