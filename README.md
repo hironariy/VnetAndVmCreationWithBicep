@@ -397,7 +397,8 @@ $echo "hello world" > /sharedblobcontainer/fusetest/blob.txt
 ```
 
 > [!Note]
-> Azure PortalでBlob Storageに作成されたかを確認する場合は本リポジトリのBicepではストレージアカウントのBlobへのPublic Accessが無効化されているので有効にし直します。
+> 本リポジトリのBicepではストレージアカウントのBlobへのPublic Access(匿名アクセス)が無効化されているのでAzure PortalでBlob Storageにディレクトリとファイルが作成されたかを確認する場合は、その設定を有効にし直します。
+> 
 >  ![ストレージアカウントのPublic Accessの設定変更](./image/blobPublicAccessEnable.png)
 >
 > するとAzure PortalでもBlob Storageにファイルが反映されていることが確認できます。
