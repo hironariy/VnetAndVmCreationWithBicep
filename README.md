@@ -397,7 +397,7 @@ $echo "hello world" > /sharedblobcontainer/fusetest/blob.txt
 ```
 
 > [!Note]
-> 本リポジトリのBicepではストレージアカウントのBlobへのPublic Access(匿名アクセス)が無効化されているのでAzure PortalでBlob Storageにディレクトリとファイルが作成されたかを確認する場合は、その設定を有効にし直します。
+> 本リポジトリのBicepではストレージアカウントのBlobへの[Public Access(匿名アクセス)](https://learn.microsoft.com/ja-jp/azure/storage/blobs/anonymous-read-access-configure?tabs=portal)が無効化されているのでAzure PortalでBlob Storageにディレクトリとファイルが作成されたかを確認する場合は、その設定を有効にし直します。
 > 
 >  ![ストレージアカウントのPublic Accessの設定変更](./image/blobPublicAccessEnable.png)
 >
