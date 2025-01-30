@@ -2,6 +2,10 @@
 
 本リポジトリのコードを使って、Azureの任意のリージョンにVNetを1つ、そのなかにサブネットを10こ、ストレージアカウントを1つ作成し、各サブネットにVMを1台ずつ、それぞれにPublic IPを付与した状態で作成する手順を示します。
 
+## 免責、Disclaimer
+
+本記事はあくまで筆者の検証環境での結果に基づいた記述であり、読者の環境で同じ操作を行った場合に必ず同じ環境の構築が成功することを約束するものではありません。あくまで参考資料としてご利用ください。
+
 ## 前提条件、利用ツール
 
 ### 前提条件
@@ -398,6 +402,8 @@ $echo "hello world" > /sharedblobcontainer/fusetest/blob.txt
 >
 > するとAzure PortalでもBlob Storageにファイルが反映されていることが確認できます。
 > ![Azure Portalからのファイル作成確認](./image/blobfusetest.png)
+>
+> ストレージアカウントの匿名アクセス設定(Public Access)とBlob Storageのコンテナのアクセスレベルの関係の詳細は[こちらのドキュメント](https://learn.microsoft.com/ja-jp/azure/storage/blobs/anonymous-read-access-prevent?tabs=portal#about-anonymous-read-access)と[こちらのドキュメント](https://learn.microsoft.com/ja-jp/azure/storage/blobs/anonymous-read-access-prevent?tabs=portal#set-the-storage-accounts-allowblobpublicaccess-property-to-false)を確認。
 
 
 
