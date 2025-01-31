@@ -31,7 +31,7 @@
 作業に入る前にあらかじめAzureサブスクリプションの作成、利用するリージョンおよびVMのSKUのクォータを確保しておいてください。本リポジトリのコードでは以下の値でVMを作成します。
 
 - リージョン: リソースグループを作成する際に指定
-- vmType (Bicepのパラメータとして設定された変数で以下の2種類があり、この値によってVM SKU、VMイメージが決定される):
+- vmType (Bicepのパラメータとして設定された変数で以下の3種類があり、この値によってVM SKU、VMイメージが決定される):
     - General: 
         - VM SKU: [Dadsv5シリーズ Standard_D2ads_v5](https://learn.microsoft.com/ja-jp/azure/virtual-machines/sizes/general-purpose/dadsv5-series?tabs=sizebasic)
         - VMイメージ: Canonical:ubuntu-24_04-lts:server:latest
@@ -410,6 +410,47 @@ $echo "hello world" > /sharedblobcontainer/fusetest/blob.txt
 > ![Azure Portalからのファイル作成確認](./image/blobfusetest.png)
 >
 > ストレージアカウントの匿名アクセス設定(Public Access)とBlob Storageのコンテナのアクセスレベルの関係の詳細は[こちらのドキュメント](https://learn.microsoft.com/ja-jp/azure/storage/blobs/anonymous-read-access-prevent?tabs=portal#about-anonymous-read-access)と[こちらのドキュメント](https://learn.microsoft.com/ja-jp/azure/storage/blobs/anonymous-read-access-prevent?tabs=portal#set-the-storage-accounts-allowblobpublicaccess-property-to-false)を確認。
+
+## HPC用作業
+
+### 4-i. Infinibandドライバーのインストール、有効化
+
+本リポジトリのHPC、HPC2のvmTypeではInfinibandドライバーがインストール、有効化されたイメージをあらかじめ利用しているため特に作業は必要ありません。[(参考)](https://learn.microsoft.com/ja-jp/azure/virtual-machines/azure-hpc-vm-images)
+
+任意のVMイメージを利用し、個別にドライバーをインストール、有効化する場合は[こちらのドキュメント](https://learn.microsoft.com/ja-jp/azure/virtual-machines/extensions/hpc-compute-infiniband-linux)をご確認ください。
+
+### 4-ii. IP over InfinibandでのVM相互通信テスト
+
+AzureのInfiniband対応VMでは同一可用性セット内のVM同士で通信できるようになります。本リポジトリのHPC、HPC2のvmTypeではIPoIBもあらかじめ有効化されており、起動時にIPoIBインターフェースに対して自動でIPアドレスが割り振られて、同一可用性セット内の他のVMのIPoIBインターフェースと通信することが可能です。
+
+```shell
+# HPC VMにSSHでログインしたところ
+$ ifconfig -a
+~~~
+ib0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 2044
+        inet 172.16.1.52  netmask 255.255.0.0  broadcast 0.0.0.0 #IPアドレスが割り振られていることがわかる。
+        inet6 fe80::215:5dff:fd33:ff3d  prefixlen 64  scopeid 0x20<link>
+        unspec 00-00-01-47-FE-80-00-00-00-00-00-00-00-00-00-00  txqueuelen 256  (UNSPEC)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 12  bytes 928 (928.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+```
+
+```shell
+$ ping 172.16.1.52 #他HPC VMのIPoIBインターフェースのIPアドレス
+PING 172.16.1.52 (172.16.1.52) 56(84) bytes of data.
+64 bytes from 172.16.1.52: icmp_seq=1 ttl=64 time=0.042 ms
+64 bytes from 172.16.1.52: icmp_seq=2 ttl=64 time=0.039 ms
+64 bytes from 172.16.1.52: icmp_seq=3 ttl=64 time=0.045 ms
+64 bytes from 172.16.1.52: icmp_seq=4 ttl=64 time=0.025 ms
+64 bytes from 172.16.1.52: icmp_seq=5 ttl=64 time=0.027 ms
+^C
+--- 172.16.1.52 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4097ms
+rtt min/avg/max/mdev = 0.025/0.035/0.045/0.008 ms
+```
+
 
 
 
