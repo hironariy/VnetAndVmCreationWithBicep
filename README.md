@@ -178,7 +178,8 @@ ssh-keygen -t rsa -b 4096
 
 ## VM作成作業
 
-> [!Note] HPCをつかってIP over Infinibandでの通信を考えている方へ
+> [!Note]
+> HPCをつかってIP over Infinibandでの通信を考えている方へ
 > IP over Infinibandを使ってHPC VM間での通信を行う場合はVMの場合は通信するVMが同一可用性セット内(Fault DomainやUpdate Domainは別れても良い)であること、VMSSの場合はsinglePlacementGroupプロパティがtrueである必要があります。
 > 本リポジトリのBicepでは一つの可用性セットにすべてのVMが立ち上がるように構成されているので特に個別の設定は必要ありませんが、通信可能範囲を分割したり、自分でBicepを組み立てる場合はご注意ください。
 > 詳細は[こちら](https://learn.microsoft.com/ja-jp/azure/virtual-machines/setup-infiniband#cluster-configuration-options)をご確認ください。
