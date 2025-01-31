@@ -66,8 +66,8 @@
     2. [BlobFuse2を使ったBlob Storageのマウント](#3-ii-blob-storageのコンテナのマウント-各vmでblob-storageをマウントして利用する場合)
 
 3. HPC用作業
-    1. Infinibandドライバーのインストール、有効化
-    2. IP over InfinibandでのVM相互通信テスト
+    1. [Infinibandドライバーのインストール、有効化](#4-i-infinibandドライバーのインストール有効化)
+    2. [IP over InfinibandでのVM相互通信テスト](#4-ii-ip-over-infinibandでのvm相互通信テスト)
 
 ## VM作成事前作業
 
