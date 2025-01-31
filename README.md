@@ -440,17 +440,18 @@ ib0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 2044
 ```
 
 ```shell
-$ ping 172.16.1.52 #他HPC VMのIPoIBインターフェースのIPアドレス
-PING 172.16.1.52 (172.16.1.52) 56(84) bytes of data.
-64 bytes from 172.16.1.52: icmp_seq=1 ttl=64 time=0.042 ms
-64 bytes from 172.16.1.52: icmp_seq=2 ttl=64 time=0.039 ms
-64 bytes from 172.16.1.52: icmp_seq=3 ttl=64 time=0.045 ms
-64 bytes from 172.16.1.52: icmp_seq=4 ttl=64 time=0.025 ms
-64 bytes from 172.16.1.52: icmp_seq=5 ttl=64 time=0.027 ms
+$ ping 172.16.1.55 #他HPC VMのIPoIBインターフェースのIPアドレス
+PING 172.16.1.55 (172.16.1.55) 56(84) bytes of data.
+64 bytes from 172.16.1.55: icmp_seq=1 ttl=64 time=0.869 ms
+64 bytes from 172.16.1.55: icmp_seq=2 ttl=64 time=0.129 ms
+64 bytes from 172.16.1.55: icmp_seq=3 ttl=64 time=0.074 ms
+64 bytes from 172.16.1.55: icmp_seq=4 ttl=64 time=0.070 ms
+64 bytes from 172.16.1.55: icmp_seq=5 ttl=64 time=0.061 ms
+64 bytes from 172.16.1.55: icmp_seq=6 ttl=64 time=0.058 ms
 ^C
---- 172.16.1.52 ping statistics ---
-5 packets transmitted, 5 received, 0% packet loss, time 4097ms
-rtt min/avg/max/mdev = 0.025/0.035/0.045/0.008 ms
+--- 172.16.1.55 ping statistics ---
+6 packets transmitted, 6 received, 0% packet loss, time 5125ms
+rtt min/avg/max/mdev = 0.058/0.210/0.869/0.295 ms
 ```
 
 
